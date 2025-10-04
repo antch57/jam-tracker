@@ -1,5 +1,18 @@
 # Jam Tracker
 
+## Dev workflow
+
+1. get db up:
+
+```bash
+docker-compose up -d
+```
+
+1. spin up app
+
+```bash
+go run cmd/api/main.go
+```
 
 ## end goal..
 
