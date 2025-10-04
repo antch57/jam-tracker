@@ -25,7 +25,7 @@ type User struct {
 // Band represents a musical band/artist.
 type Band struct {
 	ID          uuid.UUID `gorm:"type:uuid;primary_key;" json:"id"`
-	Name        string    `gorm:"not null;index" json:"name"`
+	Name        string    `gorm:"not null;index" json:"band_name"`
 	Genre       string    `json:"genre"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`

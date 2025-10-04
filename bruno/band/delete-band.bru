@@ -1,0 +1,15 @@
+meta {
+  name: delete-band
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:8080/api/v1/bands/goose
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
