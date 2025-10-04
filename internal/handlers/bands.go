@@ -29,8 +29,6 @@ func CreateBand(c *gin.Context) {
         return
     }
 
-    // TODO: what if there are two bands with the same name?
-    // Need to think about how we want to handle this.
     // Check if band already exists
     var existingBand models.Band
     if err := database.DB.Where("LOWER(name) = LOWER(?)", req.Name).First(&existingBand).Error; err == nil {
