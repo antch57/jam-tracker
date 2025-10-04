@@ -1,0 +1,19 @@
+meta {
+  name: Create Shows
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/v1/shows
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "band_name": "Goose",
+    "venue_name": "Red Rocks",
+    "date": "2024-08-24"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "jam_tracker",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
