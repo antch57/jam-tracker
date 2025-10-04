@@ -1,0 +1,15 @@
+meta {
+  name: get-band
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8080/api/v1/bands/goose
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

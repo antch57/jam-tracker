@@ -46,8 +46,10 @@ func SetupRoutes(router *gin.Engine) {
 
             // Band routes
             protected.POST("/bands", CreateBand)
+            protected.PUT("/bands/:id", UpdateBand)
             protected.GET("/bands", GetBands)
             protected.GET("/bands/:id", GetBand)
+            protected.DELETE("/bands/:id", DeleteBand)
 
             // Venue routes
             protected.POST("/venues", CreateVenue)
