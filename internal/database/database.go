@@ -58,7 +58,6 @@ func Migrate() {
 }
 
 // Helper functions
-// getEnv gets environment variable with fallback
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
