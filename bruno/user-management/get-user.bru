@@ -1,0 +1,19 @@
+meta {
+  name: get-user
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BASE_URL}}/api/v1/profile
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,16 +1,16 @@
 package config
 
 import (
-	"os"
-	"log"
 	"github.com/joho/godotenv"
+	"log"
+	"os"
 )
 
 // Config holds all configuration for our application
 type Config struct {
 	Port string
 	// DatabaseURL string
-	JWTSecret string
+	JWTSecret   string
 	Environment string
 }
 
@@ -22,18 +22,18 @@ func Load() *Config {
 	}
 
 	config := &Config{
-		Port: getEnv("PORT", "8080"),
-		JWTSecret: getEnv("JWT_SECRET", "mysecret"),
+		Port:        getEnv("PORT", "8080"),
+		JWTSecret:   getEnv("JWT_SECRET", "mysecret"),
 		Environment: getEnv("ENVIRONMENT", "development"),
 	}
 	return config
 }
 
 func getEnv(key, defaultValue string) string {
-    // Same helper function as in database package
-    // You could move this to a shared utils package later
-    if value := os.Getenv(key); value != "" {
-        return value
-    }
-    return defaultValue
+	// Same helper function as in database package
+	// You could move this to a shared utils package later
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }
