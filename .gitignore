@@ -27,8 +27,18 @@ go.work.sum
 # env file
 .env
 
+bin/
+coverage.out
+coverage.html
+
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# air tmp files
+air/
+air-test/
+*.log
+build-errors.log
 
 .DS_Store
