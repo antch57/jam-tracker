@@ -1,41 +1,40 @@
 package main
 
 import (
-    "log"
-    "jam-tracker/internal/config"
-    "jam-tracker/internal/database"
-    "jam-tracker/internal/handlers"
+	"jam-tracker/internal/config"
+	"jam-tracker/internal/database"
+	"jam-tracker/internal/handlers"
+	"log"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
-
 func main() {
-    // Load configuration
-    cfg := config.Load()
+	// Load configuration
+	cfg := config.Load()
 
-    // Connect to database
-    database.Connect()
-    database.Migrate()
+	// Connect to database
+	database.Connect()
+	database.Migrate()
 
-    // Set gin mode based on environment
-    if cfg.Environment == "production" {
-        gin.SetMode(gin.ReleaseMode)
-    }
+	// Set gin mode based on environment
+	if cfg.Environment == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
-    // Initialize router
-    router := gin.Default()
+	// Initialize router
+	router := gin.Default()
 
-    // Add middleware
-    router.Use(gin.Logger())
-    router.Use(gin.Recovery())
+	// Add middleware
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 
-    // Setup routes
-    handlers.SetupRoutes(router)
+	// Setup routes
+	handlers.SetupRoutes(router)
 
-    // Start server
-    log.Printf("Starting server on port %s", cfg.Port)
-    if err := router.Run(":" + cfg.Port); err != nil {
-        log.Fatal("Failed to start server:", err)
-    }
+	// Start server
+	log.Printf("Starting server on port %s", cfg.Port)
+	if err := router.Run(":" + cfg.Port); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
 }

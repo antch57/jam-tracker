@@ -1,0 +1,27 @@
+meta {
+  name: update-user
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{BASE_URL}}/api/v1/profile
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "first_name": "Updated First Name",
+    "last_name": "Updated Last Name",
+    "location": "updated location"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
