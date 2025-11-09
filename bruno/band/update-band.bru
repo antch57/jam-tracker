@@ -4,7 +4,7 @@ meta {
   seq: 4
 }
 
-post {
+put {
   url: {{BASE_URL}}/api/v1/bands/goose
   body: json
   auth: inherit
@@ -20,4 +20,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

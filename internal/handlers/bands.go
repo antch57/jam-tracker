@@ -63,11 +63,11 @@ func GetBands(c *gin.Context) {
 
 func GetBand(c *gin.Context) {
 	bandName := c.Param("id")
-	bandName = strings.ToLower(bandName)
+	normalizedBandName := strings.ToLower(strings.TrimSpace(strings.ReplaceAll(bandName, "-", " ")))
 
 	// Find band by name
 	var band models.Band
-	if err := database.DB.Where("name = ?", bandName).First(&band).Error; err != nil {
+	if err := database.DB.Where("name = ?", normalizedBandName).First(&band).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Band not found"})
 		return
 	}
@@ -78,7 +78,7 @@ func GetBand(c *gin.Context) {
 func UpdateBand(c *gin.Context) {
 	// Get band name from URL
 	bandName := c.Param("id")
-	bandName = strings.ToLower(bandName)
+	normalizedBandName := strings.ToLower(strings.TrimSpace(strings.ReplaceAll(bandName, "-", " ")))
 
 	// Parse request body
 	var req UpdateBandRequest
@@ -89,7 +89,7 @@ func UpdateBand(c *gin.Context) {
 
 	// Find existing band
 	var band models.Band
-	if err := database.DB.Where("name = ?", bandName).First(&band).Error; err != nil {
+	if err := database.DB.Where("name = ?", normalizedBandName).First(&band).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Band not found"})
 		return
 	}
@@ -110,11 +110,11 @@ func UpdateBand(c *gin.Context) {
 
 func DeleteBand(c *gin.Context) {
 	bandName := c.Param("id")
-	bandName = strings.ToLower(bandName)
+	normalizedBandName := strings.ToLower(strings.TrimSpace(strings.ReplaceAll(bandName, "-", " ")))
 
 	// Find existing band
 	var band models.Band
-	if err := database.DB.Where("name = ?", bandName).First(&band).Error; err != nil {
+	if err := database.DB.Where("name = ?", normalizedBandName).First(&band).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Band not found"})
 		return
 	}

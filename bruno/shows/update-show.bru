@@ -1,0 +1,25 @@
+meta {
+  name: update-show
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{BASE_URL}}/api/v1/shows/63594386-01a6-40d7-babc-6e5f92e6bbc0
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "band_name": "goose",
+    "venue_name": "red rocks",
+    "date": "2025-10-31",
+    "Notes": "updated notes"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
