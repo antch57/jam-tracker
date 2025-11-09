@@ -1,11 +1,11 @@
 meta {
-  name: create-band
+  name: create-show
   type: http
   seq: 1
 }
 
 post {
-  url: {{BASE_URL}}/api/v1/bands
+  url: {{BASE_URL}}/api/v1/shows
   body: json
   auth: inherit
 }
@@ -13,8 +13,9 @@ post {
 body:json {
   {
     "band_name": "goose",
-    "genre": "jam",
-    "description": "slaps"
+    "venue_name": "red rocks",
+    "date": "2025-10-31",
+    "Notes": "was pretty kick ass"
   }
 }
 

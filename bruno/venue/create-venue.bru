@@ -1,0 +1,27 @@
+meta {
+  name: create-venue
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/api/v1/venues
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "red rocks",
+    "city": "Morrison",
+    "state": "CO",
+    "country": "USA",
+    "address": "18300 W Alameda Pkwy, Morrison, CO 80465",
+    "capacity": "9,525"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

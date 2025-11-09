@@ -56,6 +56,8 @@ func SetupRoutes(router *gin.Engine) {
 			protected.POST("/venues", CreateVenue)
 			protected.GET("/venues", GetVenues)
 			protected.GET("/venues/:id", GetVenue)
+			protected.PUT("/venues/:id", UpdateVenue)
+			protected.DELETE("/venues/:id", DeleteVenue)
 
 			// Recommendation routes
 			protected.GET("/recommendations", GetRecommendations)

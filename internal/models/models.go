@@ -1,9 +1,10 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 // User represents a user in the system.
@@ -43,7 +44,7 @@ type Venue struct {
 	State     string    `gorm:"not null" json:"state"`
 	Country   string    `gorm:"default:'USA'" json:"country"`
 	Address   string    `json:"address"`
-	Capacity  int       `json:"capacity"`
+	Capacity  string    `json:"capacity"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 

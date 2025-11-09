@@ -1,11 +1,11 @@
 meta {
-  name: delete-band
+  name: get-venue
   type: http
-  seq: 5
+  seq: 3
 }
 
-delete {
-  url: {{BASE_URL}}/api/v1/bands/goose
+get {
+  url: {{BASE_URL}}/api/v1/venues/red-rocks
   body: none
   auth: inherit
 }
