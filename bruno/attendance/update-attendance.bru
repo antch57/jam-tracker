@@ -1,0 +1,26 @@
+meta {
+  name: update-attendance
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{BASE_URL}}/api/v1/attendances/2d787866-d9a1-4d86-be61-fab1200dde68
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "attended": true,
+    "rating": 5.0,
+    "favorite_song": "Tweezer",
+    "notes": "Updated - best show ever!"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

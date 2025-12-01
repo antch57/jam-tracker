@@ -1,0 +1,26 @@
+meta {
+  name: attend-show
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/api/v1/shows/4981c422-5f4d-488b-979a-0f72fbfcd601/attend
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "attended": true,
+    "rating": 4.5,
+    "favorite_song": "Harry Hood",
+    "notes": "Amazing encore!"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
