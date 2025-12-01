@@ -25,6 +25,14 @@ type UpdateShowRequest struct {
 	Notes     string `json:"notes" binding:"omitempty,max=500"`
 }
 
+// Parse request body
+type AttendShowRequest struct {
+	Attended     bool     `json:"attended"`
+	Rating       *float64 `json:"rating" binding:"omitempty,min=1,max=5"`
+	FavoriteSong string   `json:"favorite_song" binding:"omitempty,max=200"`
+	Notes        string   `json:"notes" binding:"omitempty,max=500"`
+}
+
 func CreateShow(c *gin.Context) {
 	var req CreateShowRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -296,15 +304,164 @@ func DeleteShow(c *gin.Context) {
 }
 
 func AttendShow(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "AttendShow not implemented yet"})
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	showIDParam := c.Param("id")
+	showID, err := uuid.Parse(showIDParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid show ID"})
+		return
+	}
+
+	var req AttendShowRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Verify show exists
+	var show models.Show
+	if err := database.DB.Where("id = ?", showID).First(&show).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Show not found"})
+		return
+	}
+
+	// Check if user already has attendance for this show
+	var existingAttendance models.ShowAttendance
+	if err := database.DB.Where("user_id = ? AND show_id = ?", userID, showID).First(&existingAttendance).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Attendance already exists for this show. Use PUT to update."})
+		return
+	}
+
+	// Create attendance record
+	attendance := models.ShowAttendance{
+		UserID:       userID.(uuid.UUID),
+		ShowID:       showID,
+		Attended:     req.Attended,
+		Rating:       req.Rating,
+		FavoriteSong: strings.TrimSpace(req.FavoriteSong),
+		Notes:        strings.TrimSpace(req.Notes),
+	}
+
+	if err := database.DB.Create(&attendance).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create attendance record"})
+		return
+	}
+
+	// Preload relationships for response
+	if err := database.DB.Preload("Show.Band").Preload("Show.Venue").First(&attendance, attendance.ID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load attendance details"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, attendance)
 }
 
+// UpdateAttendance - Update an existing attendance record
 func UpdateAttendance(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "UpdateAttendance not implemented yet"})
+	// Get user ID from JWT token
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Get attendance ID from URL
+	attendanceIDParam := c.Param("id")
+	attendanceID, err := uuid.Parse(attendanceIDParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid attendance ID"})
+		return
+	}
+
+	// Parse request body
+	type UpdateAttendanceRequest struct {
+		Attended     bool     `json:"attended"`
+		Rating       *float64 `json:"rating" binding:"omitempty,min=1,max=5"`
+		FavoriteSong string   `json:"favorite_song" binding:"omitempty,max=200"`
+		Notes        string   `json:"notes" binding:"omitempty,max=500"`
+	}
+
+	var req UpdateAttendanceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Find the attendance record
+	var attendance models.ShowAttendance
+	if err := database.DB.Where("id = ?", attendanceID).First(&attendance).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Attendance record not found"})
+		return
+	}
+
+	// Verify the attendance belongs to the authenticated user
+	if attendance.UserID != userID.(uuid.UUID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only update your own attendance records"})
+		return
+	}
+
+	// Update the attendance
+	attendance.Attended = req.Attended
+	attendance.Rating = req.Rating
+	attendance.FavoriteSong = strings.TrimSpace(req.FavoriteSong)
+	attendance.Notes = strings.TrimSpace(req.Notes)
+
+	if err := database.DB.Save(&attendance).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update attendance record"})
+		return
+	}
+
+	// Reload with relationships
+	if err := database.DB.Preload("Show.Band").Preload("Show.Venue").First(&attendance, attendance.ID).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load attendance details"})
+		return
+	}
+
+	c.JSON(http.StatusOK, attendance)
 }
 
+// DeleteAttendance - Remove an attendance record
 func DeleteAttendance(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "DeleteAttendance not implemented yet"})
+	// Get user ID from JWT token
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Get attendance ID from URL
+	attendanceIDParam := c.Param("id")
+	attendanceID, err := uuid.Parse(attendanceIDParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid attendance ID"})
+		return
+	}
+
+	// Find the attendance record
+	var attendance models.ShowAttendance
+	if err := database.DB.Where("id = ?", attendanceID).First(&attendance).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Attendance record not found"})
+		return
+	}
+
+	// Verify the attendance belongs to the authenticated user
+	if attendance.UserID != userID.(uuid.UUID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only delete your own attendance records"})
+		return
+	}
+
+	// Delete the attendance record
+	if err := database.DB.Delete(&attendance).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete attendance record"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Attendance record deleted successfully"})
 }
 
 func GetRecommendations(c *gin.Context) {

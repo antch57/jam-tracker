@@ -1,0 +1,16 @@
+meta {
+  name: delete-attendance
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{BASE_URL}}/api/v1/attendances/2d787866-d9a1-4d86-be61-fab1200dde68
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
